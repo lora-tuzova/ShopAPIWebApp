@@ -6,7 +6,7 @@ namespace ShopAPIWebApp.Models
     {
         public Order()
         {
-            OrderItems = new List<Item> { };
+            OrderItems = new List<ItemInOrder> { };
         }
         [Key]
         [Display(Name = "№")]
@@ -16,9 +16,7 @@ namespace ShopAPIWebApp.Models
         public string OrderOwner { get; set; }
         [Display(Name = "Вартість")]
         public decimal OrderPrice { get; set; }
-        [Display(Name = "Дод. інформація")]
-        public string OrderInfo { get; set; }
-        public virtual ICollection<Item> OrderItems { get; set; }
+        public virtual ICollection<ItemInOrder> OrderItems { get; set; }
     }
 
 }

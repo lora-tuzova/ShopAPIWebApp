@@ -1,9 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopAPIWebApp.Models
 {
     public class Item
     {
+        public Item() 
+            {
+                OrderItems = new List<ItemInOrder> { };
+            }
         [Key]
         [Display(Name = "№")]
         public byte ItemID { get; set; }
@@ -12,8 +17,9 @@ namespace ShopAPIWebApp.Models
         public string ItemName { get; set; }
         [Display(Name = "Ціна")]
         public decimal ItemPrice { get; set; }
-        [Display(Name = "Дод. інформація")]
-        public string ItemInfo { get; set; }
+        [Range(0,1)]
+        public byte ItemStatus { get; set; }
+        public virtual ICollection<ItemInOrder> OrderItems { get; set; }
     }
 
 }
