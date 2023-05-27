@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,6 +64,19 @@ namespace ShopAPIWebApp.Controllers
 
             try
             {
+                var itOrders = _context.ItemsInOrder.Where(i=>i.IdItem == id).Include(i=>i.Order);
+                foreach (var itOrder in itOrders)
+                {
+                    if (itOrder.Order.OrderStatus == 0)
+                    {
+                        itOrder.Order.OrderPrice = 0;
+                        _context.Items.Load();
+                        foreach (ItemInOrder i in itOrder.Order.OrderItems)
+                        {
+                            itOrder.Order.OrderPrice += i.Item.ItemPrice * i.ItemQuantity;
+                        }
+                    }
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -124,7 +138,15 @@ namespace ShopAPIWebApp.Controllers
             }
 
             if (item.ItemStatus == 1)
+            {
                 item.ItemStatus = 0;
+                _context.Orders.Load();
+                var itOrders = _context.ItemsInOrder.Where(o => o.IdItem == id);
+                foreach (var i in itOrders)
+                {
+                    if (i.Order.OrderStatus==0) _context.ItemsInOrder.Remove(i);
+                }
+            }
             else item.ItemStatus = 1;
             _context.Items.Update(item);
             await _context.SaveChangesAsync();

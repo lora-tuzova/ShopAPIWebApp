@@ -33,7 +33,7 @@ namespace ShopAPIWebApp.Controllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(byte id)
+        public async Task<ActionResult<Order>> GetOrder(int id)
         {
           if (_context.Orders == null)
           {
@@ -52,7 +52,7 @@ namespace ShopAPIWebApp.Controllers
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(byte id, Order order)
+        public async Task<IActionResult> PutOrder(int id, Order order)
         {
             if (id != order.OrderID)
             {
@@ -111,7 +111,7 @@ namespace ShopAPIWebApp.Controllers
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(byte id)
+        public async Task<IActionResult> DeleteOrder(int id)
         {
             if (_context.Orders == null)
             {
@@ -128,7 +128,7 @@ namespace ShopAPIWebApp.Controllers
             return NoContent();
         }
 
-        private bool OrderExists(byte id)
+        private bool OrderExists(int id)
         {
             return (_context.Orders?.Any(e => e.OrderID == id)).GetValueOrDefault();
         }

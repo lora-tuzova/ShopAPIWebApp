@@ -58,11 +58,23 @@ namespace ShopAPIWebApp.Controllers
             {
                 return BadRequest();
             }
-
+            _context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+            if (itemInOrder.Order.OrderStatus == 1)
+            {
+                return Problem("Order is non-active and cannot be modified");
+            }
             _context.Entry(itemInOrder).State = EntityState.Modified;
 
             try
             {
+                Order o=_context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+                _context.Orders.Include(o=>o.OrderItems);
+                o.OrderPrice = 0;
+                _context.Items.Load();
+                foreach (ItemInOrder i in o.OrderItems)
+                {
+                    o.OrderPrice += i.Item.ItemPrice * i.ItemQuantity;
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -89,7 +101,20 @@ namespace ShopAPIWebApp.Controllers
           {
               return Problem("Entity set 'ShopAPIContext.ItemsInOrder'  is null.");
           }
+            _context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+            if (itemInOrder.Order.OrderStatus==1)
+            {
+                return Problem("Order is non-active and cannot be modified");
+            }
             _context.ItemsInOrder.Add(itemInOrder);
+            Order o = _context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+            _context.Orders.Include(o => o.OrderItems);
+            o.OrderPrice = 0;
+            _context.Items.Load();
+            foreach (ItemInOrder i in o.OrderItems)
+            {
+                o.OrderPrice += i.Item.ItemPrice * i.ItemQuantity;
+            }
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetItemInOrder", new { id = itemInOrder.Id }, itemInOrder);
@@ -108,8 +133,21 @@ namespace ShopAPIWebApp.Controllers
             {
                 return NotFound();
             }
+            _context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+            if (itemInOrder.Order.OrderStatus == 1)
+            {
+                return Problem("Order is non-active and cannot be modified");
+            }
 
             _context.ItemsInOrder.Remove(itemInOrder);
+            Order o = _context.Orders.Where(o => o.OrderID == itemInOrder.IdOrder).FirstOrDefault();
+            _context.Orders.Include(o => o.OrderItems);
+            o.OrderPrice = 0;
+            _context.Items.Load();
+            foreach (ItemInOrder i in o.OrderItems)
+            {
+                o.OrderPrice += i.Item.ItemPrice * i.ItemQuantity;
+            }
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -10,12 +10,14 @@ namespace ShopAPIWebApp.Models
         }
         [Key]
         [Display(Name = "№")]
-        public byte OrderID { get; set; }
+        public int OrderID { get; set; }
         [Required]
         [Display(Name = "Замовник")]
         public string OrderOwner { get; set; }
         [Display(Name = "Вартість")]
-        public decimal OrderPrice { get; set; }
+        public decimal OrderPrice { get; set; } = 0;
+        [Display(Name = "Статус замовлення")]
+        public byte OrderStatus { get; set; } = 0;
         public virtual ICollection<ItemInOrder> OrderItems { get; set; }
     }
 
